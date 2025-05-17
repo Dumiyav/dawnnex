@@ -1,0 +1,2088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dawnnex – AI Automation, Elevated</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
+              950: '#2e1065',
+            },
+            secondary: {
+              50: '#fdf2f8',
+              100: '#fce7f3',
+              200: '#fbcfe8',
+              300: '#f9a8d4',
+              400: '#f472b6',
+              500: '#ec4899',
+              600: '#db2777',
+              700: '#be185d',
+              800: '#9d174d',
+              900: '#831843',
+              950: '#500724',
+            },
+            dark: {
+              100: '#1e1e2d',
+              200: '#1a1a27',
+              300: '#151521',
+              400: '#13131f',
+              500: '#0f0f17',
+              600: '#0c0c12',
+              700: '#09090d',
+              800: '#060608',
+              900: '#030303',
+            }
+          },
+          fontFamily: {
+            'sans': ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+            'display': ['Poppins', 'ui-sans-serif', 'system-ui'],
+            'mono': ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'bounce-slow': 'bounce 3s infinite',
+            'spin-slow': 'spin 8s linear infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-20px)' },
+            }
+          },
+          boxShadow: {
+            'glow': '0 0 15px 2px rgba(139, 92, 246, 0.3)',
+            'glow-lg': '0 0 25px 5px rgba(139, 92, 246, 0.4)',
+            'glow-pink': '0 0 15px 2px rgba(236, 72, 153, 0.3)',
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- p5.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+  <!-- GSAP for animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+  <style>
+    /* Custom Styles */
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;
+    }
+    
+    body {
+      overflow-x: hidden;
+    }
+    
+    .glass {
+      background: rgba(30, 30, 45, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .glass-light {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .gradient-text {
+      background: linear-gradient(to right, #ec4899, #8b5cf6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .gradient-border {
+      position: relative;
+      border-radius: 0.75rem;
+    }
+    
+    .gradient-border::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 0.85rem;
+      background: linear-gradient(to right, #ec4899, #8b5cf6);
+      z-index: -1;
+      opacity: 0.5;
+    }
+    
+    .gradient-border:hover::before {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+    
+    .gradient-btn {
+      background: linear-gradient(to right, #ec4899, #8b5cf6);
+      transition: all 0.3s ease;
+    }
+    
+    .gradient-btn:hover {
+      background: linear-gradient(to right, #db2777, #7c3aed);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+    }
+    
+    .canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    #hero-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+    }
+    
+    #particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+    }
+    
+    .service-card {
+      transition: all 0.3s ease;
+    }
+    
+    .service-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .service-icon {
+      transition: all 0.3s ease;
+    }
+    
+    .service-card:hover .service-icon {
+      transform: scale(1.1);
+    }
+    
+    .counter-value {
+      transition: all 0.3s ease;
+    }
+    
+    .testimonial-card {
+      transition: all 0.3s ease;
+    }
+    
+    .testimonial-card.active {
+      transform: scale(1.05);
+    }
+    
+    .faq-item {
+      transition: all 0.3s ease;
+    }
+    
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+    
+    .faq-item.active .faq-answer {
+      max-height: 500px;
+    }
+    
+    .faq-item.active .faq-icon {
+      transform: rotate(45deg);
+    }
+    
+    .pricing-card {
+      transition: all 0.3s ease;
+    }
+    
+    .pricing-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .pricing-card.popular {
+      transform: scale(1.05);
+    }
+    
+    .pricing-card.popular:hover {
+      transform: scale(1.05) translateY(-5px);
+    }
+    
+    .scroll-indicator {
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-20px);
+      }
+      60% {
+        transform: translateY(-10px);
+      }
+    }
+    
+    .floating-action-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 99;
+      transition: all 0.3s ease;
+    }
+    
+    .floating-action-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    /* Dark/Light Mode Transition */
+    .dark-mode-transition {
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(30, 30, 45, 0.2);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(to bottom, #ec4899, #8b5cf6);
+      border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(to bottom, #db2777, #7c3aed);
+    }
+    
+    /* Loader */
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0f0f17;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .loader-content {
+      text-align: center;
+    }
+    
+    .loader-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      border-top-color: #8b5cf6;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body class="bg-dark-500 text-gray-200 font-sans antialiased dark-mode-transition">
+  <!-- Loader -->
+  <div class="loader" id="loader">
+    <div class="loader-content">
+      <div class="loader-spinner mx-auto mb-4"></div>
+      <h2 class="text-2xl font-display font-bold gradient-text">Dawnnex</h2>
+      <p class="text-gray-400 mt-2">Loading experience...</p>
+    </div>
+  </div>
+
+  <!-- Background Elements -->
+  <div id="particles-canvas"></div>
+
+  <!-- Floating Action Button -->
+  <div class="floating-action-btn">
+    <button id="chat-btn" class="w-14 h-14 rounded-full gradient-btn flex items-center justify-center shadow-glow">
+      <i class="fas fa-comment-dots text-white text-xl"></i>
+    </button>
+  </div>
+
+  <!-- NAVBAR -->
+  <header id="header" class="fixed w-full z-50 transition-all duration-300 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8">
+      <a href="#" class="flex items-center space-x-2">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-secondary-500 to-primary-600 flex items-center justify-center shadow-glow">
+          <span class="text-white font-bold text-xl">D</span>
+        </div>
+        <h1 class="text-2xl font-display font-extrabold">Dawnnex</h1>
+      </a>
+      
+      <div class="flex items-center space-x-4">
+        <button id="theme-toggle" class="p-2 rounded-full hover:bg-dark-300 transition-colors">
+          <i class="fas fa-moon text-gray-300"></i>
+        </button>
+        
+        <nav class="hidden md:block">
+          <ul class="flex space-x-8 text-base font-medium">
+            <li><a href="#services" class="hover:text-primary-400 transition-colors">Services</a></li>
+            <li><a href="#metrics" class="hover:text-primary-400 transition-colors">Metrics</a></li>
+            <li><a href="#cases" class="hover:text-primary-400 transition-colors">Case Studies</a></li>
+            <li><a href="#testimonials" class="hover:text-primary-400 transition-colors">Testimonials</a></li>
+            <li><a href="#pricing" class="hover:text-primary-400 transition-colors">Pricing</a></li>
+            <li><a href="#faq" class="hover:text-primary-400 transition-colors">FAQ</a></li>
+            <li><a href="#contact" class="hover:text-primary-400 transition-colors">Contact</a></li>
+          </ul>
+        </nav>
+        
+        <button class="hidden md:block px-6 py-2.5 rounded-full gradient-btn text-white font-medium shadow-md hover:shadow-glow transition-all">
+          Get Started
+        </button>
+        
+        <button id="nav-toggle" class="md:hidden p-2 rounded-lg hover:bg-dark-300 transition-colors">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="md:hidden hidden">
+      <div class="glass mt-4 mx-4 rounded-xl p-4 shadow-lg">
+        <ul class="space-y-4 text-base font-medium">
+          <li><a href="#services" class="block py-2 px-4 hover:bg-dark-300 rounded-lg transition-colors">Services</a></li>
+          <li><a href="#metrics" class="block py-2 px-4 hover:bg-dark-300 rounded-lg transition-colors">Metrics</a></li>
+          <li><a href="#cases" class="block py-2 px-4 hover:bg-dark-300 rounded-lg transition-colors">Case Studies</a></li>
+          <li><a href="#testimonials" class="block py-2 px-4 hover:bg-dark-300 rounded-lg transition-colors">Testimonials</a></li>
+          <li><a href="#pricing" class="block py-2 px-4 hover:bg-dark-300 rounded-lg transition-colors">Pricing</a></li>
+          <li><a href="#faq" class="block py-2 px-4 hover:bg-dark-300 rounded-lg transition-colors">FAQ</a></li>
+          <li><a href="#contact" class="block py-2 px-4 hover:bg-dark-300 rounded-lg transition-colors">Contact</a></li>
+          <li class="pt-2">
+            <button class="w-full py-3 rounded-full gradient-btn text-white font-medium shadow-md">
+              Get Started
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero" class="relative min-h-screen flex items-center justify-center text-center px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div id="hero-canvas" class="canvas-container"></div>
+    
+    <div class="relative z-10 max-w-4xl mx-auto">
+      <div class="inline-block mb-6">
+        <span class="px-4 py-1.5 rounded-full glass text-sm font-medium text-primary-300 border border-primary-500/30">
+          <i class="fas fa-rocket mr-2"></i>Next-Gen AI Automation
+        </span>
+      </div>
+      
+      <h2 class="text-5xl sm:text-6xl md:text-7xl font-display font-black mb-6 leading-tight">
+        <span class="gradient-text">Automate. Optimize.</span><br>
+        <span class="gradient-text">Dominate.</span>
+      </h2>
+      
+      <p class="mb-10 max-w-2xl mx-auto text-lg sm:text-xl text-gray-300 leading-relaxed">
+        Dawnnex unleashes the power of AI to capture leads, supercharge follow-ups, and skyrocket appointments—all on autopilot.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+        <a href="#services" class="px-8 py-4 rounded-full gradient-btn text-white font-medium shadow-md hover:shadow-glow transition-all">
+          <i class="fas fa-bolt mr-2"></i>Discover How
+        </a>
+        
+        <a href="#demo" class="px-8 py-4 rounded-full bg-dark-300 hover:bg-dark-200 text-white font-medium transition-all">
+          <i class="fas fa-play mr-2"></i>Watch Demo
+        </a>
+      </div>
+      
+      <div class="mt-16 flex flex-wrap justify-center gap-8 text-sm text-gray-400">
+        <div class="flex items-center">
+          <i class="fas fa-check-circle text-primary-500 mr-2"></i>
+          <span>No credit card required</span>
+        </div>
+        <div class="flex items-center">
+          <i class="fas fa-check-circle text-primary-500 mr-2"></i>
+          <span>14-day free trial</span>
+        </div>
+        <div class="flex items-center">
+          <i class="fas fa-check-circle text-primary-500 mr-2"></i>
+          <span>Cancel anytime</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 scroll-indicator">
+      <a href="#services" class="text-gray-400 hover:text-white transition-colors">
+        <i class="fas fa-chevron-down text-2xl"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="py-24 px-4 sm:px-6 lg:px-8 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h3 class="inline-block px-4 py-1.5 rounded-full glass text-sm font-medium text-primary-300 border border-primary-500/30 mb-4">
+          <i class="fas fa-star mr-2"></i>Our Services
+        </h3>
+        <h2 class="text-4xl md:text-5xl font-display font-bold mb-6 gradient-text">Comprehensive AI Solutions</h2>
+        <p class="max-w-2xl mx-auto text-lg text-gray-300">
+          Powerful tools designed to automate your business processes, enhance customer engagement, and drive growth.
+        </p>
+      </div>
+      
+      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Service 1 -->
+        <div class="service-card glass rounded-2xl p-6 gradient-border">
+          <div class="service-icon w-14 h-14 rounded-full bg-primary-500/10 flex items-center justify-center mb-6">
+            <i class="fas fa-robot text-primary-400 text-2xl"></i>
+          </div>
+          <h4 class="text-xl font-display font-semibold mb-3">AI Lead Capture</h4>
+          <p class="text-gray-300 mb-4">24/7 intelligent chatbots & AI forms to qualify and funnel your hottest prospects.</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Natural language processing</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Multi-language support</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Custom qualification criteria</span>
+            </li>
+          </ul>
+          <a href="#" class="inline-block mt-6 text-primary-400 hover:text-primary-300 font-medium transition-colors">
+            Learn more <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        
+        <!-- Service 2 -->
+        <div class="service-card glass rounded-2xl p-6 gradient-border">
+          <div class="service-icon w-14 h-14 rounded-full bg-primary-500/10 flex items-center justify-center mb-6">
+            <i class="fas fa-comment-dots text-primary-400 text-2xl"></i>
+          </div>
+          <h4 class="text-xl font-display font-semibold mb-3">Automated Follow-Up</h4>
+          <p class="text-gray-300 mb-4">Personalized email & WhatsApp sequences that reignite cold leads—without lifting a finger.</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Behavior-triggered sequences</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>A/B testing optimization</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Multi-channel coordination</span>
+            </li>
+          </ul>
+          <a href="#" class="inline-block mt-6 text-primary-400 hover:text-primary-300 font-medium transition-colors">
+            Learn more <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        
+        <!-- Service 3 -->
+        <div class="service-card glass rounded-2xl p-6 gradient-border">
+          <div class="service-icon w-14 h-14 rounded-full bg-primary-500/10 flex items-center justify-center mb-6">
+            <i class="fas fa-calendar-check text-primary-400 text-2xl"></i>
+          </div>
+          <h4 class="text-xl font-display font-semibold mb-3">Booking & Reminders</h4>
+          <p class="text-gray-300 mb-4">Seamlessly sync with your calendar and slash no-shows with timed reminders.</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Smart scheduling</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Automated confirmation</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Calendar integration</span>
+            </li>
+          </ul>
+          <a href="#" class="inline-block mt-6 text-primary-400 hover:text-primary-300 font-medium transition-colors">
+            Learn more <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        
+        <!-- Service 4 -->
+        <div class="service-card glass rounded-2xl p-6 gradient-border">
+          <div class="service-icon w-14 h-14 rounded-full bg-primary-500/10 flex items-center justify-center mb-6">
+            <i class="fas fa-chart-line text-primary-400 text-2xl"></i>
+          </div>
+          <h4 class="text-xl font-display font-semibold mb-3">Live Analytics</h4>
+          <p class="text-gray-300 mb-4">Actionable metrics to refine your funnels in real time and optimize conversions.</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Real-time conversion tracking</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Customer journey mapping</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>ROI calculation</span>
+            </li>
+          </ul>
+          <a href="#" class="inline-block mt-6 text-primary-400 hover:text-primary-300 font-medium transition-colors">
+            Learn more <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        
+        <!-- Service 5 -->
+        <div class="service-card glass rounded-2xl p-6 gradient-border">
+          <div class="service-icon w-14 h-14 rounded-full bg-primary-500/10 flex items-center justify-center mb-6">
+            <i class="fas fa-plug text-primary-400 text-2xl"></i>
+          </div>
+          <h4 class="text-xl font-display font-semibold mb-3">API Integration</h4>
+          <p class="text-gray-300 mb-4">Plug into your CRM, payment gateways, and tools—no code, no hassle.</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>One-click CRM integration</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Secure payment processing</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Webhook support</span>
+            </li>
+          </ul>
+          <a href="#" class="inline-block mt-6 text-primary-400 hover:text-primary-300 font-medium transition-colors">
+            Learn more <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        
+        <!-- Service 6 -->
+        <div class="service-card glass rounded-2xl p-6 gradient-border">
+          <div class="service-icon w-14 h-14 rounded-full bg-primary-500/10 flex items-center justify-center mb-6">
+            <i class="fas fa-sitemap text-primary-400 text-2xl"></i>
+          </div>
+          <h4 class="text-xl font-display font-semibold mb-3">Custom Workflows</h4>
+          <p class="text-gray-300 mb-4">Drag-and-drop automation builder so you stay in control of your business processes.</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Visual workflow builder</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Conditional logic</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+              <span>Template library</span>
+            </li>
+          </ul>
+          <a href="#" class="inline-block mt-6 text-primary-400 hover:text-primary-300 font-medium transition-colors">
+            Learn more <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="mt-16 text-center">
+        <a href="#" class="inline-block px-8 py-4 rounded-full gradient-btn text-white font-medium shadow-md hover:shadow-glow transition-all">
+          <i class="fas fa-th-large mr-2"></i>View All Services
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- METRICS -->
+  <section id="metrics" class="py-24 px-4 sm:px-6 lg:px-8 bg-dark-400 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h3 class="inline-block px-4 py-1.5 rounded-full glass text-sm font-medium text-primary-300 border border-primary-500/30 mb-4">
+          <i class="fas fa-chart-bar mr-2"></i>Our Impact
+        </h3>
+        <h2 class="text-4xl md:text-5xl font-display font-bold mb-6 gradient-text">Proven Results</h2>
+        <p class="max-w-2xl mx-auto text-lg text-gray-300">
+          Our AI-powered platform delivers measurable improvements across key business metrics.
+        </p>
+      </div>
+      
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Metric 1 -->
+        <div class="glass rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 rounded-full bg-primary-500/10 flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-user-plus text-primary-400 text-2xl"></i>
+          </div>
+          <p class="text-5xl font-display font-extrabold gradient-text counter-value" data-target="75">0</p>
+          <p class="text-gray-400 mt-2 text-lg">New Patient Growth (%)</p>
+          <p class="text-sm text-gray-500 mt-4">Average increase in new patient acquisition within 90 days</p>
+        </div>
+        
+        <!-- Metric 2 -->
+        <div class="glass rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 rounded-full bg-primary-500/10 flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-calendar-times text-primary-400 text-2xl"></i>
+          </div>
+          <p class="text-5xl font-display font-extrabold gradient-text counter-value" data-target="40">0</p>
+          <p class="text-gray-400 mt-2 text-lg">No-Show Reduction (%)</p>
+          <p class="text-sm text-gray-500 mt-4">Average decrease in appointment no-shows with our reminder system</p>
+        </div>
+        
+        <!-- Metric 3 -->
+        <div class="glass rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 rounded-full bg-primary-500/10 flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-calendar-check text-primary-400 text-2xl"></i>
+          </div>
+          <p class="text-5xl font-display font-extrabold gradient-text counter-value" data-target="150">0</p>
+          <p class="text-gray-400 mt-2 text-lg">Appointments (K+)</p>
+          <p class="text-sm text-gray-500 mt-4">Total appointments scheduled through our platform</p>
+        </div>
+        
+        <!-- Metric 4 -->
+        <div class="glass rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 rounded-full bg-primary-500/10 flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-headset text-primary-400 text-2xl"></i>
+          </div>
+          <p class="text-5xl font-display font-extrabold gradient-text counter-value" data-target="24">0</p>
+          <p class="text-gray-400 mt-2 text-lg">Support (hrs/day)</p>
+          <p class="text-sm text-gray-500 mt-4">Round-the-clock customer support for all your needs</p>
+        </div>
+      </div>
+      
+      <div class="mt-16 glass rounded-2xl p-8 max-w-4xl mx-auto">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+          <div class="mb-6 md:mb-0 md:mr-8">
+            <h3 class="text-2xl font-display font-bold mb-4">Ready to boost your metrics?</h3>
+            <p class="text-gray-300">Join 500+ businesses already growing with Dawnnex.</p>
+          </div>
+          <a href="#" class="px-8 py-4 rounded-full gradient-btn text-white font-medium shadow-md hover:shadow-glow transition-all whitespace-nowrap">
+            <i class="fas fa-rocket mr-2"></i>Get Started
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE STUDIES -->
+  <section id="cases" class="py-24 px-4 sm:px-6 lg:px-8 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h3 class="inline-block px-4 py-1.5 rounded-full glass text-sm font-medium text-primary-300 border border-primary-500/30 mb-4">
+          <i class="fas fa-briefcase mr-2"></i>Success Stories
+        </h3>
+        <h2 class="text-4xl md:text-5xl font-display font-bold mb-6 gradient-text">Case Studies</h2>
+        <p class="max-w-2xl mx-auto text-lg text-gray-300">
+          See how businesses like yours achieved remarkable results with our AI automation platform.
+        </p>
+      </div>
+      
+      <div class="case-studies-slider relative">
+        <div class="case-studies-container">
+          <!-- Case Study 1 -->
+          <div class="case-study-slide glass rounded-2xl p-8 mb-8 active">
+            <div class="flex flex-col lg:flex-row">
+              <div class="lg:w-1/3 mb-6 lg:mb-0 lg:pr-8">
+                <div class="w-20 h-20 rounded-full bg-primary-500/10 flex items-center justify-center mb-6">
+                  <i class="fas fa-tooth text-primary-400 text-3xl"></i>
+                </div>
+                <h4 class="text-2xl font-display font-semibold mb-2">Dental Clinic XYZ</h4>
+                <p class="text-primary-300 font-medium mb-4">Patient Acquisition & Retention</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="px-3 py-1 rounded-full bg-primary-500/10 text-primary-300 text-xs">Healthcare</span>
+                  <span class="px-3 py-1 rounded-full bg-primary-500/10 text-primary-300 text-xs">Lead Generation</span>
+                </div>
+              </div>
+              
+              <div class="lg:w-2/3">
+                <div class="mb-6">
+                  <h5 class="text-lg font-medium mb-2">Challenge</h5>
+                  <p class="text-gray-300">Struggling with inconsistent appointment scheduling and high no-show rates that were costing the practice thousands in lost revenue each month.</p>
+                </div>
+                
+                <div class="mb-6">
+                  <h5 class="text-lg font-medium mb-2">Solution</h5>
+                  <p class="text-gray-300">Implemented AI chatbot for 24/7 booking, automated follow-up sequences, and smart reminders with confirmation requirements.</p>
+                </div>
+                
+                <div>
+                  <h5 class="text-lg font-medium mb-2">Results</h5>
+                  <ul class="space-y-2 text-gray-300">
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>75% increase in new patient bookings within 90 days</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>43% reduction in no-shows</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>68% less staff time spent on scheduling</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>$25,000 monthly revenue increase</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+              <a href="#" class="inline-block px-6 py-3 rounded-full gradient-btn text-white font-medium shadow-md hover:shadow-glow transition-all">
+                <i class="fas fa-file-alt mr-2"></i>Read Full Case Study
+              </a>
+            </div>
+          </div>
+          
+          <!-- Case Study 2 -->
+          <div class="case-study-slide glass rounded-2xl p-8 mb-8 hidden">
+            <div class="flex flex-col lg:flex-row">
+              <div class="lg:w-1/3 mb-6 lg:mb-0 lg:pr-8">
+                <div class="w-20 h-20 rounded-full bg-primary-500/10 flex items-center justify-center mb-6">
+                  <i class="fas fa-spa text-primary-400 text-3xl"></i>
+                </div>
+                <h4 class="text-2xl font-display font-semibold mb-2">SkinCare Pro</h4>
+                <p class="text-primary-300 font-medium mb-4">Appointment Optimization</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="px-3 py-1 rounded-full bg-primary-500/10 text-primary-300 text-xs">Beauty</span>
+                  <span class="px-3 py-1 rounded-full bg-primary-500/10 text-primary-300 text-xs">Appointment Optimization</span>
+                </div>
+              </div>
+              
+              <div class="lg:w-2/3">
+                <div class="mb-6">
+                  <h5 class="text-lg font-medium mb-2">Challenge</h5>
+                  <p class="text-gray-300">High cancellation rates and difficulty filling last-minute openings in their schedule, resulting in lost revenue opportunities.</p>
+                </div>
+                
+                <div class="mb-6">
+                  <h5 class="text-lg font-medium mb-2">Solution</h5>
+                  <p class="text-gray-300">Deployed smart reminder system with automated rebooking for cancellations and waitlist management to fill gaps in the schedule.</p>
+                </div>
+                
+                <div>
+                  <h5 class="text-lg font-medium mb-2">Results</h5>
+                  <ul class="space-y-2 text-gray-300">
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>40% reduction in no-shows</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>92% of cancelled slots refilled automatically</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>28% increase in add-on services through AI recommendations</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>$20,000 additional monthly revenue</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+              <a href="#" class="inline-block px-6 py-3 rounded-full gradient-btn text-white font-medium shadow-md hover:shadow-glow transition-all">
+                <i class="fas fa-file-alt mr-2"></i>Read Full Case Study
+              </a>
+            </div>
+          </div>
+          
+          <!-- Case Study 3 -->
+          <div class="case-study-slide glass rounded-2xl p-8 mb-8 hidden">
+            <div class="flex flex-col lg:flex-row">
+              <div class="lg:w-1/3 mb-6 lg:mb-0 lg:pr-8">
+                <div class="w-20 h-20 rounded-full bg-primary-500/10 flex items-center justify-center mb-6">
+                  <i class="fas fa-heartbeat text-primary-400 text-3xl"></i>
+                </div>
+                <h4 class="text-2xl font-display font-semibold mb-2">Wellness Center ABC</h4>
+                <p class="text-primary-300 font-medium mb-4">Multi-location Management</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="px-3 py-1 rounded-full bg-primary-500/10 text-primary-300 text-xs">Wellness</span>
+                  <span class="px-3 py-1 rounded-full bg-primary-500/10 text-primary-300 text-xs">Multi-location</span>
+                </div>
+              </div>
+              
+              <div class="lg:w-2/3">
+                <div class="mb-6">
+                  <h5 class="text-lg font-medium mb-2">Challenge</h5>
+                  <p class="text-gray-300">Managing appointments across multiple locations with different service offerings and staff availability was creating scheduling conflicts.</p>
+                </div>
+                
+                <div class="mb-6">
+                  <h5 class="text-lg font-medium mb-2">Solution</h5>
+                  <p class="text-gray-300">Centralized AI booking platform with location-specific rules and intelligent staff allocation based on expertise and availability.</p>
+                </div>
+                
+                <div>
+                  <h5 class="text-lg font-medium mb-2">Results</h5>
+                  <ul class="space-y-2 text-gray-300">
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>35% increase in capacity utilization</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>62% reduction in scheduling conflicts</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>22% improvement in staff productivity</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
+                      <span>Seamless expansion to 3 new locations</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+              <a href="#" class="inline-block px-6 py-3 rounded-full gradient-btn text-white font-medium shadow-md hover:shadow-glow transition-all">
+                <i class="fas fa-file-alt mr-2"></i>Read Full Case Study
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Case Study Navigation -->
+        <div class="flex justify-center mt-8 space-x-2">
+          <button class="case-nav-btn w-3 h-3 rounded-full bg-primary-500 opacity-100" data-index="0"></button>
+          <button class="case-nav-btn w-3 h-3 rounded-full bg-gray-600 opacity-50" data-index="1"></button>
+          <button class="case-nav-btn w-3 h-3 rounded-full bg-gray-600 opacity-50" data-index="2"></button>
+        </div>
+        
+        <div class="flex justify-center mt-6 space-x-4">
+          <button id="prev-case" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-dark-200 transition-colors">
+            <i class="fas fa-chevron-left text-gray-300"></i>
+          </button>
+          <button id="next-case" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-dark-200 transition-colors">
+            <i class="fas fa-chevron-right text-gray-300"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials" class="py-24 px-4 sm:px-6 lg:px-8 bg-dark-400 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h3 class="inline-block px-4 py-1.5 rounded-full glass text-sm font-medium text-primary-300 border border-primary-500/30 mb-4">
+          <i class="fas fa-quote-left mr-2"></i>Testimonials
+        </h3>
+        <h2 class="text-4xl md:text-5xl font-display font-bold mb-6 gradient-text">What Clients Say</h2>
+        <p class="max-w-2xl mx-auto text-lg text-gray-300">
+          Don't just take our word for it. Here's what our clients have to say about Dawnnex.
+        </p>
+      </div>
+      
+      <div class="testimonials-slider relative max-w-4xl mx-auto">
+        <div class="testimonials-container">
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card glass rounded-2xl p-8 active">
+            <div class="text-primary-400 text-5xl opacity-20 absolute top-6 left-8">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="relative z-10">
+              <blockquote class="text-xl md:text-2xl italic text-gray-300 mb-8">
+                "Dawnnex cut our admin workload in half and doubled monthly revenue—priceless! The AI chatbot feels so natural that our patients can't tell they're not talking to a human."
+              </blockquote>
+              
+              <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center mr-4">
+                  <i class="fas fa-user text-primary-400"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Dr. Nimal Perera</p>
+                  <p class="text-gray-400 text-sm">Cosmetic Surgeon, Aesthetic Medical Center</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card glass rounded-2xl p-8 hidden">
+            <div class="text-primary-400 text-5xl opacity-20 absolute top-6 left-8">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="relative z-10">
+              <blockquote class="text-xl md:text-2xl italic text-gray-300 mb-8">
+                "We've tried other automation tools, but nothing compares to Dawnnex's intelligent follow-up sequences. Our conversion rate has increased by 45% and our team now focuses on patient care instead of administrative tasks."
+              </blockquote>
+              
+              <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center mr-4">
+                  <i class="fas fa-user text-primary-400"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Sarah Johnson</p>
+                  <p class="text-gray-400 text-sm">Practice Manager, Wellness Partners LLC</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card glass rounded-2xl p-8 hidden">
+            <div class="text-primary-400 text-5xl opacity-20 absolute top-6 left-8">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="relative z-10">
+              <blockquote class="text-xl md:text-2xl italic text-gray-300 mb-8">
+                "The ROI was evident within the first month. Our no-show rate dropped from 30% to just 5%, and we're booking 40% more appointments. The custom workflows have streamlined our entire operation."
+              </blockquote>
+              
+              <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center mr-4">
+                  <i class="fas fa-user text-primary-400"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Michael Chen</p>
+                  <p class="text-gray-400 text-sm">Marketing Director, Premier Health Group</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Testimonial Navigation -->
+        <div class="flex justify-center mt-8 space-x-2">
+          <button class="testimonial-nav-btn w-3 h-3 rounded-full bg-primary-500 opacity-100" data-index="0"></button>
+          <button class="testimonial-nav-btn w-3 h-3 rounded-full bg-gray-600 opacity-50" data-index="1"></button>
+          <button class="testimonial-nav-btn w-3 h-3 rounded-full bg-gray-600 opacity-50" data-index="2"></button>
+        </div>
+        
+        <div class="flex justify-center mt-6 space-x-4">
+          <button id="prev-testimonial" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-dark-200 transition-colors">
+            <i class="fas fa-chevron-left text-gray-300"></i>
+          </button>
+          <button id="next-testimonial" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-dark-200 transition-colors">
+            <i class="fas fa-chevron-right text-gray-300"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" class="py-24 px-4 sm:px-6 lg:px-8 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h3 class="inline-block px-4 py-1.5 rounded-full glass text-sm font-medium text-primary-300 border border-primary-500/30 mb-4">
+          <i class="fas fa-tag mr-2"></i>Pricing Plans
+        </h3>
+        <h2 class="text-4xl md:text-5xl font-display font-bold mb-6 gradient-text">Simple, Transparent Pricing</h2>
+        <p class="max-w-2xl mx-auto text-lg text-gray-300">
+          Choose the perfect plan for your business needs. All plans include a 14-day free trial.
+        </p>
+        
+        <div class="flex items-center justify-center mt-8">
+          <span id="monthly-label" class="text-white font-medium">Monthly</span>
+          <div class="mx-4 relative">
+            <input type="checkbox" id="pricing-toggle" class="sr-only">
+            <label for="pricing-toggle" class="block w-14 h-8 rounded-full bg-dark-300 cursor-pointer relative">
+              <span class="toggle-dot absolute left-1 top-1 bg-primary-500 w-6 h-6 rounded-full transition-transform duration-300"></span>
+            </label>
+          </div>
+          <span id="annual-label" class="text-gray-400 font-medium">Annual <span class="text-primary-400 text-sm">(Save 20%)</span></span>
+        </div>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Starter Plan -->
+        <div class="pricing-card glass rounded-2xl overflow-hidden">
+          <div class="p-8">
+            <h4 class="text-2xl font-display font-semibold mb-2">Starter</h4>
+            <p class="text-gray-400 mb-6">Perfect for small practices just getting started with automation.</p>
+            
+            <div class="mb-6">
+              <p class="monthly-price text-5xl font-display font-bold">$99<span class="text-lg text-gray-400 font-normal">/mo</span></p>
+              <p class="annual-price text-5xl font-display font-bold hidden">$79<span class="text-lg text-gray-400 font-normal">/mo</span></p>
+              <p class="annual-note text-sm text-gray-400 hidden">Billed annually ($948/year)</p>
+            </div>
+            
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>AI Lead Capture (1 chatbot)</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Basic Follow-Up Sequences</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Calendar Integration</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Email Support</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Up to 100 appointments/month</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Basic Analytics</span>
+              </li>
+              <li class="flex items-start text-gray-500">
+                <i class="fas fa-times mt-1 mr-2"></i>
+                <span>No API Access</span>
+              </li>
+              <li class="flex items-start text-gray-500">
+                <i class="fas fa-times mt-1 mr-2"></i>
+                <span>No Custom Workflows</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="p-8 pt-0">
+            <a href="#" class="block w-full py-3 rounded-full bg-dark-300 hover:bg-dark-200 text-white font-medium text-center transition-colors">
+              Start Free Trial
+            </a>
+          </div>
+        </div>
+        
+        <!-- Professional Plan -->
+        <div class="pricing-card glass rounded-2xl overflow-hidden popular relative">
+          <div class="absolute top-0 left-0 right-0 bg-gradient-to-r from-secondary-600 to-primary-600 text-white text-center py-2 font-medium">
+            Most Popular
+          </div>
+          
+          <div class="p-8 pt-14">
+            <h4 class="text-2xl font-display font-semibold mb-2">Professional</h4>
+            <p class="text-gray-400 mb-6">Ideal for growing practices looking to scale their operations.</p>
+            
+            <div class="mb-6">
+              <p class="monthly-price text-5xl font-display font-bold gradient-text">$199<span class="text-lg text-gray-400 font-normal">/mo</span></p>
+              <p class="annual-price text-5xl font-display font-bold gradient-text hidden">$159<span class="text-lg text-gray-400 font-normal">/mo</span></p>
+              <p class="annual-note text-sm text-gray-400 hidden">Billed annually ($1,908/year)</p>
+            </div>
+            
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Everything in Starter, plus:</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Multiple AI Chatbots</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Advanced Follow-Up Sequences</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>WhatsApp Integration</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Custom Booking Pages</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Up to 500 appointments/month</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Advanced Analytics</span>
+              </li>
+              <li class="flex items-start text-gray-500">
+                <i class="fas fa-times mt-1 mr-2"></i>
+                <span>Limited API Access</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="p-8 pt-0">
+            <a href="#" class="block w-full py-3 rounded-full gradient-btn text-white font-medium text-center shadow-md hover:shadow-glow transition-all">
+              Start Free Trial
+            </a>
+          </div>
+        </div>
+        
+        <!-- Enterprise Plan -->
+        <div class="pricing-card glass rounded-2xl overflow-hidden">
+          <div class="p-8">
+            <h4 class="text-2xl font-display font-semibold mb-2">Enterprise</h4>
+            <p class="text-gray-400 mb-6">For established businesses with complex automation needs.</p>
+            
+            <div class="mb-6">
+              <p class="monthly-price text-5xl font-display font-bold">$399<span class="text-lg text-gray-400 font-normal">/mo</span></p>
+              <p class="annual-price text-5xl font-display font-bold hidden">$319<span class="text-lg text-gray-400 font-normal">/mo</span></p>
+              <p class="annual-note text-sm text-gray-400 hidden">Billed annually ($3,828/year)</p>
+            </div>
+            
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Everything in Professional, plus:</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Unlimited AI Chatbots</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>White-labeled Experience</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Full API Access</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Advanced Custom Workflows</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Unlimited Appointments</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>Dedicated Account Manager</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-primary-500 mt-1 mr-2"></i>
+                <span>24/7 Priority Support</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="p-8 pt-0">
+            <a href="#" class="block w-full py-3 rounded-full bg-dark-300 hover:bg-dark-200 text-white font-medium text-center transition-colors">
+              Start Free Trial
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-16 text-center">
+        <p class="text-gray-400 mb-4">Need a custom plan for your specific requirements?</p>
+        <a href="#" class="inline-block px-8 py-4 rounded-full bg-dark-300 hover:bg-dark-200 text-white font-medium transition-colors">
+          <i class="fas fa-headset mr-2"></i>Contact Sales
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-24 px-4 sm:px-6 lg:px-8 bg-dark-400 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h3 class="inline-block px-4 py-1.5 rounded-full glass text-sm font-medium text-primary-300 border border-primary-500/30 mb-4">
+          <i class="fas fa-question-circle mr-2"></i>FAQ
+        </h3>
+        <h2 class="text-4xl md:text-5xl font-display font-bold mb-6 gradient-text">Frequently Asked Questions</h2>
+        <p class="max-w-2xl mx-auto text-lg text-gray-300">
+          Got questions? We've got answers. If you don't see what you're looking for, reach out to our team.
+        </p>
+      </div>
+      
+      <div class="max-w-3xl mx-auto">
+        <div class="space-y-4">
+          <!-- FAQ Item 1 -->
+          <div class="faq-item glass rounded-xl overflow-hidden">
+            <button class="faq-question w-full text-left p-6 flex justify-between items-center">
+              <span class="text-lg font-medium">How does the AI lead capture system work?</span>
+              <i class="fas fa-plus faq-icon transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer px-6 pb-6">
+              <p class="text-gray-300">
+                Our AI lead capture system uses natural language processing to engage with visitors on your website 24/7. It qualifies leads by asking relevant questions, schedules appointments directly into your calendar, and seamlessly hands off to your team when needed. The system learns from each interaction to continuously improve conversion rates.
+              </p>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 2 -->
+          <div class="faq-item glass rounded-xl overflow-hidden">
+            <button class="faq-question w-full text-left p-6 flex justify-between items-center">
+              <span class="text-lg font-medium">Can I customize the chatbot to match my brand?</span>
+              <i class="fas fa-plus faq-icon transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer px-6 pb-6">
+              <p class="text-gray-300">
+                Yes, you can fully customize the chatbot's appearance, conversation flow, and responses to align with your brand voice. Our visual editor makes it easy to design the perfect experience without any coding knowledge required.
+              </p>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 3 -->
+          <div class="faq-item glass rounded-xl overflow-hidden">
+            <button class="faq-question w-full text-left p-6 flex justify-between items-center">
+              <span class="text-lg font-medium">How does Dawnnex integrate with my existing systems?</span>
+              <i class="fas fa-plus faq-icon transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer px-6 pb-6">
+              <p class="text-gray-300">
+                Dawnnex offers one-click integrations with popular CRMs, calendar systems, and marketing tools. We support Salesforce, HubSpot, Google Calendar, Outlook, and many more. For custom systems, our API provides seamless data exchange. Our team can assist with integration setup to ensure a smooth workflow.
+              </p>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 4 -->
+          <div class="faq-item glass rounded-xl overflow-hidden">
+            <button class="faq-question w-full text-left p-6 flex justify-between items-center">
+              <span class="text-lg font-medium">What kind of results can I expect?</span>
+              <i class="fas fa-plus faq-icon transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer px-6 pb-6">
+              <p class="text-gray-300">
+                While results vary by industry and implementation, our clients typically see a 40-75% increase in qualified leads, 30-50% reduction in no-shows, and significant time savings on administrative tasks. Our dashboard provides real-time analytics to track your specific ROI.
+              </p>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 5 -->
+          <div class="faq-item glass rounded-xl overflow-hidden">
+            <button class="faq-question w-full text-left p-6 flex justify-between items-center">
+              <span class="text-lg font-medium">Is my data secure with Dawnnex?</span>
+              <i class="fas fa-plus faq-icon transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer px-6 pb-6">
+              <p class="text-gray-300">
+                Security is our top priority. We use bank-level encryption for all data, comply with GDPR, HIPAA, and other relevant regulations, and undergo regular security audits. Your data is never sold or shared with third parties, and you maintain full ownership of all information collected.
+              </p>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 6 -->
+          <div class="faq-item glass rounded-xl overflow-hidden">
+            <button class="faq-question w-full text-left p-6 flex justify-between items-center">
+              <span class="text-lg font-medium">How long does it take to set up?</span>
+              <i class="fas fa-plus faq-icon transition-transform duration-300"></i>
+            </button>
+            <div class="faq-answer px-6 pb-6">
+              <p class="text-gray-300">
+                Most clients are up and running within 1-2 days. Our guided setup process helps you configure your automation workflows, and our team provides personalized onboarding to ensure you're getting the most value from day one.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-12 text-center">
+          <p class="text-gray-400 mb-4">Still have questions? We're here to help!</p>
+          <a href="#" class="inline-block px-8 py-4 rounded-full gradient-btn text-white font-medium shadow-md hover:shadow-glow transition-all">
+            <i class="fas fa-envelope mr-2"></i>Contact Support
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section id="newsletter" class="py-24 px-4 sm:px-6 lg:px-8 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="glass rounded-2xl overflow-hidden">
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="p-8 md:p-12 bg-gradient-to-br from-secondary-600 to-primary-600 flex items-center">
+            <div>
+              <h3 class="text-3xl font-display font-bold mb-4 text-white">Stay Updated</h3>
+              <p class="text-white/80 text-lg mb-6">
+                Get the latest news, tips, and exclusive offers delivered straight to your inbox.
+              </p>
+              <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                  <i class="fas fa-envelope text-white text-xl"></i>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                  <i class="fas fa-bell text-white text-xl"></i>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                  <i class="fas fa-gift text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-8 md:p-12 flex items-center">
+            <div class="w-full">
+              <h4 class="text-2xl font-display font-semibold mb-2">Subscribe to Our Newsletter</h4>
+              <p class="text-gray-400 mb-6">Join 10,000+ healthcare professionals who receive our weekly insights.</p>
+              
+              <form id="newsletter-form" class="space-y-4">
+                <div>
+                  <label for="email" class="block text-sm font-medium mb-1">Email Address</label>
+                  <input type="email" id="email" class="w-full px-4 py-3 rounded-lg bg-dark-300 border border-dark-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="you@example.com" required>
+                </div>
+                
+                <div class="flex items-start">
+                  <input type="checkbox" id="consent" class="mt-1 mr-2" required>
+                  <label for="consent" class="text-sm text-gray-400">
+                    I agree to receive marketing communications from Dawnnex. You can unsubscribe at any time.
+                  </label>
+                </div>
+                
+                <button type="submit" class="w-full py-3 rounded-full gradient-btn text-white font-medium shadow-md hover:shadow-glow transition-all">
+                  <i class="fas fa-paper-plane mr-2"></i>Subscribe
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-24 px-4 sm:px-6 lg:px-8 bg-dark-400 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h3 class="inline-block px-4 py-1.5 rounded-full glass text-sm font-medium text-primary-300 border border-primary-500/30 mb-4">
+          <i class="fas fa-envelope mr-2"></i>Contact Us
+        </h3>
+        <h2 class="text-4xl md:text-5xl font-display font-bold mb-6 gradient-text">Get in Touch</h2>
+        <p class="max-w-2xl mx-auto text-lg text-gray-300">
+          Have questions or ready to get started? Reach out to our team for personalized assistance.
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="md:col-span-2">
+          <div class="glass rounded-2xl p-8">
+            <form id="contact-form" class="space-y-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label for="name" class="block text-sm font-medium mb-1">Full Name</label>
+                  <input type="text" id="name" class="w-full px-4 py-3 rounded-lg bg-dark-300 border border-dark-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="John Doe" required>
+                </div>
+                
+                <div>
+                  <label for="contact-email" class="block text-sm font-medium mb-1">Email Address</label>
+                  <input type="email" id="contact-email" class="w-full px-4 py-3 rounded-lg bg-dark-300 border border-dark-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="you@example.com" required>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label for="phone" class="block text-sm font-medium mb-1">Phone Number (Optional)</label>
+                  <input type="tel" id="phone" class="w-full px-4 py-3 rounded-lg bg-dark-300 border border-dark-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="+1 (555) 123-4567">
+                </div>
+                
+                <div>
+                  <label for="company" class="block text-sm font-medium mb-1">Company (Optional)</label>
+                  <input type="text" id="company" class="w-full px-4 py-3 rounded-lg bg-dark-300 border border-dark-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="Your Company">
+                </div>
+              </div>
+              
+              <div>
+                <label for="subject" class="block text-sm font-medium mb-1">Subject</label>
+                <input type="text" id="subject" class="w-full px-4 py-3 rounded-lg bg-dark-300 border border-dark-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="How can we help?" required>
+              </div>
+              
+              <div>
+                <label for="message" class="block text-sm font-medium mb-1">Message</label>
+                <textarea id="message" rows="5" class="w-full px-4 py-3 rounded-lg bg-dark-300 border border-dark-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="Tell us more about your needs..." required></textarea>
+              </div>
+              
+              <button type="submit" class="px-8 py-4 rounded-full gradient-btn text-white font-medium shadow-md hover:shadow-glow transition-all">
+                <i class="fas fa-paper-plane mr-2"></i>Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+        
+        <div>
+          <div class="glass rounded-2xl p-8 h-full">
+            <h4 class="text-xl font-display font-semibold mb-6">Contact Information</h4>
+            
+            <div class="space-y-6">
+              <div class="flex items-start">
+                <div class="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center mr-4 mt-1">
+                  <i class="fas fa-map-marker-alt text-primary-400"></i>
+                </div>
+                <div>
+                  <h5 class="font-medium mb-1">Address</h5>
+                  <p class="text-gray-400">
+                    123 AI Boulevard<br>
+                    Tech District, CA 94103<br>
+                    United States
+                  </p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center mr-4 mt-1">
+                  <i class="fas fa-envelope text-primary-400"></i>
+                </div>
+                <div>
+                  <h5 class="font-medium mb-1">Email</h5>
+                  <p class="text-gray-400">
+                    info@dawnnex.ai<br>
+                    support@dawnnex.ai
+                  </p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center mr-4 mt-1">
+                  <i class="fas fa-phone-alt text-primary-400"></i>
+                </div>
+                <div>
+                  <h5 class="font-medium mb-1">Phone</h5>
+                  <p class="text-gray-400">
+                    +1 (555) 123-4567<br>
+                    +1 (555) 987-6543
+                  </p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center mr-4 mt-1">
+                  <i class="fas fa-clock text-primary-400"></i>
+                </div>
+                <div>
+                  <h5 class="font-medium mb-1">Business Hours</h5>
+                  <p class="text-gray-400">
+                    Monday - Friday: 9AM - 6PM PST<br>
+                    Saturday: 10AM - 2PM PST<br>
+                    Sunday: Closed
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-dark-300">
+              <h5 class="font-medium mb-4">Connect With Us</h5>
+              <div class="flex space-x-4">
+                <a href="#" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-primary-500/20 transition-colors">
+                  <i class="fab fa-facebook-f text-gray-300"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-primary-500/20 transition-colors">
+                  <i class="fab fa-twitter text-gray-300"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-primary-500/20 transition-colors">
+                  <i class="fab fa-linkedin-in text-gray-300"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-primary-500/20 transition-colors">
+                  <i class="fab fa-instagram text-gray-300"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="pt-16 pb-8 px-4 sm:px-6 lg:px-8 bg-dark-500 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div class="lg:col-span-2">
+          <div class="flex items-center space-x-2 mb-6">
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-secondary-500 to-primary-600 flex items-center justify-center shadow-glow">
+              <span class="text-white font-bold text-xl">D</span>
+            </div>
+            <h1 class="text-2xl font-display font-extrabold">Dawnnex</h1>
+          </div>
+          
+          <p class="text-gray-400 mb-6 max-w-md">
+            Dawnnex unleashes the power of AI to capture leads, supercharge follow-ups, and skyrocket appointments—all on autopilot.
+          </p>
+          
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-primary-500/20 transition-colors">
+              <i class="fab fa-facebook-f text-gray-300"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-primary-500/20 transition-colors">
+              <i class="fab fa-twitter text-gray-300"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-primary-500/20 transition-colors">
+              <i class="fab fa-linkedin-in text-gray-300"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-dark-300 flex items-center justify-center hover:bg-primary-500/20 transition-colors">
+              <i class="fab fa-instagram text-gray-300"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h5 class="text-lg font-display font-semibold mb-6">Company</h5>
+          <ul class="space-y-4">
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">About Us</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Careers</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Blog</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Press</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Partners</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h5 class="text-lg font-display font-semibold mb-6">Resources</h5>
+          <ul class="space-y-4">
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Documentation</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Help Center</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">API Reference</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Community</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Webinars</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h5 class="text-lg font-display font-semibold mb-6">Legal</h5>
+          <ul class="space-y-4">
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Cookie Policy</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">GDPR Compliance</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-primary-400 transition-colors">Security</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-dark-300 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-500 text-sm mb-4 md:mb-0">
+          &copy; 2025 Dawnnex. All rights reserved.
+        </p>
+        
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="#" class="text-gray-500 hover:text-primary-400 transition-colors text-sm">Privacy</a>
+          <a href="#" class="text-gray-500 hover:text-primary-400 transition-colors text-sm">Terms</a>
+          <a href="#" class="text-gray-500 hover:text-primary-400 transition-colors text-sm">Cookies</a>
+          <a href="#" class="text-gray-500 hover:text-primary-400 transition-colors text-sm">Sitemap</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Chat Widget (Hidden by default) -->
+  <div id="chat-widget" class="fixed bottom-24 right-8 z-50 w-80 glass rounded-2xl shadow-lg hidden">
+    <div class="p-4 bg-gradient-to-r from-secondary-600 to-primary-600 rounded-t-2xl flex justify-between items-center">
+      <h4 class="text-white font-medium">Chat with Dawnnex AI</h4>
+      <button id="close-chat" class="text-white hover:text-gray-200 transition-colors">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="p-4 h-80 overflow-y-auto" id="chat-messages">
+      <div class="flex items-start mb-4">
+        <div class="w-8 h-8 rounded-full bg-primary-500/20 flex items-center justify-center mr-2">
+          <i class="fas fa-robot text-primary-400 text-sm"></i>
+        </div>
+        <div class="bg-dark-300 rounded-lg p-3 max-w-[80%]">
+          <p class="text-sm">Hi there! I'm the Dawnnex AI assistant. How can I help you today?</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-4 border-t border-dark-300">
+      <form id="chat-form" class="flex">
+        <input type="text" id="chat-input" class="flex-grow px-4 py-2 rounded-l-lg bg-dark-300 border border-dark-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="Type your message...">
+        <button type="submit" class="px-4 py-2 rounded-r-lg gradient-btn text-white">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Loader
+      setTimeout(function() {
+        document.getElementById('loader').style.opacity = '0';
+        setTimeout(function() {
+          document.getElementById('loader').style.display = 'none';
+        }, 500);
+      }, 1500);
+      
+      // Mobile Menu Toggle
+      const navToggle = document.getElementById('nav-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+      
+      navToggle.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+      });
+      
+      // Header Scroll Effect
+      const header = document.getElementById('header');
+      
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 20) {
+          header.classList.add('glass');
+          header.classList.remove('py-4');
+          header.classList.add('py-2');
+        } else {
+          header.classList.remove('glass');
+          header.classList.add('py-4');
+          header.classList.remove('py-2');
+        }
+      });
+      
+      // Theme Toggle
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeIcon = themeToggle.querySelector('i');
+      const body = document.body;
+      
+      themeToggle.addEventListener('click', function() {
+        body.classList.toggle('light');
+        
+        if (body.classList.contains('light')) {
+          themeIcon.classList.remove('fa-moon');
+          themeIcon.classList.add('fa-sun');
+        } else {
+          themeIcon.classList.remove('fa-sun');
+          themeIcon.classList.add('fa-moon');
+        }
+      });
+      
+      // Counter Animation
+      const counters = document.querySelectorAll('.counter-value');
+      
+      const observerOptions = {
+        threshold: 0.5
+      };
+      
+      const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const counter = entry.target;
+            const target = parseInt(counter.getAttribute('data-target'));
+            let count = 0;
+            const updateCounter = () => {
+              const increment = target / 50;
+              if (count < target) {
+                count += increment;
+                counter.textContent = Math.ceil(count);
+                setTimeout(updateCounter, 30);
+              } else {
+                counter.textContent = target;
+              }
+            };
+            updateCounter();
+            observer.unobserve(counter);
+          }
+        });
+      }, observerOptions);
+      
+      counters.forEach(counter => {
+        observer.observe(counter);
+      });
+      
+      // Case Studies Slider
+      const caseStudySlides = document.querySelectorAll('.case-study-slide');
+      const caseNavBtns = document.querySelectorAll('.case-nav-btn');
+      const prevCaseBtn = document.getElementById('prev-case');
+      const nextCaseBtn = document.getElementById('next-case');
+      let currentCaseIndex = 0;
+      
+      function showCase(index) {
+        caseStudySlides.forEach(slide => slide.classList.add('hidden'));
+        caseNavBtns.forEach(btn => {
+          btn.classList.remove('bg-primary-500');
+          btn.classList.add('bg-gray-600');
+          btn.classList.remove('opacity-100');
+          btn.classList.add('opacity-50');
+        });
+        
+        caseStudySlides[index].classList.remove('hidden');
+        caseNavBtns[index].classList.add('bg-primary-500');
+        caseNavBtns[index].classList.remove('bg-gray-600');
+        caseNavBtns[index].classList.add('opacity-100');
+        caseNavBtns[index].classList.remove('opacity-50');
+        
+        currentCaseIndex = index;
+      }
+      
+      caseNavBtns.forEach((btn, index) => {
+        btn.addEventListener('click', () => showCase(index));
+      });
+      
+      prevCaseBtn.addEventListener('click', () => {
+        let newIndex = currentCaseIndex - 1;
+        if (newIndex < 0) newIndex = caseStudySlides.length - 1;
+        showCase(newIndex);
+      });
+      
+      nextCaseBtn.addEventListener('click', () => {
+        let newIndex = currentCaseIndex + 1;
+        if (newIndex >= caseStudySlides.length) newIndex = 0;
+        showCase(newIndex);
+      });
+      
+      // Testimonials Slider
+      const testimonialCards = document.querySelectorAll('.testimonial-card');
+      const testimonialNavBtns = document.querySelectorAll('.testimonial-nav-btn');
+      const prevTestimonialBtn = document.getElementById('prev-testimonial');
+      const nextTestimonialBtn = document.getElementById('next-testimonial');
+      let currentTestimonialIndex = 0;
+      
+      function showTestimonial(index) {
+        testimonialCards.forEach(card => card.classList.add('hidden'));
+        testimonialNavBtns.forEach(btn => {
+          btn.classList.remove('bg-primary-500');
+          btn.classList.add('bg-gray-600');
+          btn.classList.remove('opacity-100');
+          btn.classList.add('opacity-50');
+        });
+        
+        testimonialCards[index].classList.remove('hidden');
+        testimonialNavBtns[index].classList.add('bg-primary-500');
+        testimonialNavBtns[index].classList.remove('bg-gray-600');
+        testimonialNavBtns[index].classList.add('opacity-100');
+        testimonialNavBtns[index].classList.remove('opacity-50');
+        
+        currentTestimonialIndex = index;
+      }
+      
+      testimonialNavBtns.forEach((btn, index) => {
+        btn.addEventListener('click', () => showTestimonial(index));
+      });
+      
+      prevTestimonialBtn.addEventListener('click', () => {
+        let newIndex = currentTestimonialIndex - 1;
+        if (newIndex < 0) newIndex = testimonialCards.length - 1;
+        showTestimonial(newIndex);
+      });
+      
+      nextTestimonialBtn.addEventListener('click', () => {
+        let newIndex = currentTestimonialIndex + 1;
+        if (newIndex >= testimonialCards.length) newIndex = 0;
+        showTestimonial(newIndex);
+      });
+      
+      // Auto-rotate testimonials
+      setInterval(() => {
+        let newIndex = currentTestimonialIndex + 1;
+        if (newIndex >= testimonialCards.length) newIndex = 0;
+        showTestimonial(newIndex);
+      }, 8000);
+      
+      // Pricing Toggle
+      const pricingToggle = document.getElementById('pricing-toggle');
+      const monthlyPrices = document.querySelectorAll('.monthly-price');
+      const annualPrices = document.querySelectorAll('.annual-price');
+      const annualNotes = document.querySelectorAll('.annual-note');
+      const monthlyLabel = document.getElementById('monthly-label');
+      const annualLabel = document.getElementById('annual-label');
+      
+      pricingToggle.addEventListener('change', function() {
+        if (this.checked) {
+          monthlyPrices.forEach(price => price.classList.add('hidden'));
+          annualPrices.forEach(price => price.classList.remove('hidden'));
+          annualNotes.forEach(note => note.classList.remove('hidden'));
+          monthlyLabel.classList.add('text-gray-400');
+          monthlyLabel.classList.remove('text-white');
+          annualLabel.classList.add('text-white');
+          annualLabel.classList.remove('text-gray-400');
+        } else {
+          monthlyPrices.forEach(price => price.classList.remove('hidden'));
+          annualPrices.forEach(price => price.classList.add('hidden'));
+          annualNotes.forEach(note => note.classList.add('hidden'));
+          monthlyLabel.classList.add('text-white');
+          monthlyLabel.classList.remove('text-gray-400');
+          annualLabel.classList.add('text-gray-400');
+          annualLabel.classList.remove('text-white');
+        }
+      });
+      
+      // FAQ Accordion
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      
+      faqQuestions.forEach(question => {
+        question.addEventListener('click', function() {
+          const faqItem = this.parentElement;
+          faqItem.classList.toggle('active');
+        });
+      });
+      
+      // Chat Widget
+      const chatBtn = document.getElementById('chat-btn');
+      const chatWidget = document.getElementById('chat-widget');
+      const closeChat = document.getElementById('close-chat');
+      const chatForm = document.getElementById('chat-form');
+      const chatInput = document.getElementById('chat-input');
+      const chatMessages = document.getElementById('chat-messages');
+      
+      chatBtn.addEventListener('click', function() {
+        chatWidget.classList.toggle('hidden');
+      });
+      
+      closeChat.addEventListener('click', function() {
+        chatWidget.classList.add('hidden');
+      });
+      
+      chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const message = chatInput.value.trim();
+        if (message === '') return;
+        
+        // Add user message
+        const userMessageHTML = `
+          <div class="flex items-start justify-end mb-4">
+            <div class="bg-primary-500/20 rounded-lg p-3 max-w-[80%]">
+              <p class="text-sm">${message}</p>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-dark-300 flex items-center justify-center ml-2">
+              <i class="fas fa-user text-gray-400 text-sm"></i>
+            </div>
+          </div>
+        `;
+        
+        chatMessages.insertAdjacentHTML('beforeend', userMessageHTML);
+        chatInput.value = '';
+        
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // Simulate AI response after a short delay
+        setTimeout(() => {
+          const aiResponses = [
+            "Thanks for reaching out! How can I help you with Dawnnex today?",
+            "I'd be happy to tell you more about our AI automation features. What specific area are you interested in?",
+            "Great question! Our pricing plans start at $99/month, and we offer a 14-day free trial.",
+            "Dawnnex integrates with most popular CRMs and calendar systems.",
+            "I can help you schedule a demo with our team. When would be a good time for you?"
+          ];
+          
+          const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+          
+          const aiMessageHTML = `
+            <div class="flex items-start mb-4">
+              <div class="w-8 h-8 rounded-full bg-primary-500/20 flex items-center justify-center mr-2">
+                <i class="fas fa-robot text-primary-400 text-sm"></i>
+              </div>
+              <div class="bg-dark-300 rounded-lg p-3 max-w-[80%]">
+                <p class="text-sm">${randomResponse}</p>
+              </div>
+            </div>
+          `;
+          
+          chatMessages.insertAdjacentHTML('beforeend', aiMessageHTML);
+          
+          // Scroll to bottom
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 1000);
+      });
+      
+      // Form Submissions
+      const contactForm = document.getElementById('contact-form');
+      const newsletterForm = document.getElementById('newsletter-form');
+      
+      if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          alert('Thank you for your message! We will get back to you soon.');
+          this.reset();
+        });
+      }
+      
+      if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          alert('Thank you for subscribing to our newsletter!');
+          this.reset();
+        });
+      }
+    });
+
+    // Three.js Hero Background
+    window.addEventListener('load', function() {
+      const canvas = document.getElementById('hero-canvas');
+      
+      // Scene setup
+      const scene = new THREE.Scene();
+      
+      // Camera setup
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 30;
+      
+      // Renderer setup
+      const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        alpha: true,
+        antialias: true
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      
+      // Create objects
+      const torusGeometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+      const torusMaterial = new THREE.MeshBasicMaterial({
+        color: 0x8b5cf6,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.2
+      });
+      const torusKnot = new THREE.Mesh(torusGeometry, torusMaterial);
+      scene.add(torusKnot);
+      
+      // Create particles
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 2000;
+      
+      const posArray = new Float32Array(particlesCount * 3);
+      
+      for (let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 100;
+      }
+      
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.2,
+        color: 0xec4899,
+        transparent: true,
+        opacity: 0.5
+      });
+      
+      const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particlesMesh);
+      
+      // Handle resize
+      window.addEventListener('resize', () => {
+        // Update camera
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        
+        // Update renderer
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      });
+      
+      // Mouse movement effect
+      document.addEventListener('mousemove', (event) => {
+        const mouseX = event.clientX / window.innerWidth - 0.5;
+        const mouseY = event.clientY / window.innerHeight - 0.5;
+        
+        torusKnot.rotation.y = mouseX * 0.5;
+        torusKnot.rotation.x = mouseY * 0.5;
+      });
+      
+      // Animation loop
+      const animate = () => {
+        requestAnimationFrame(animate);
+        
+        torusKnot.rotation.x += 0.003;
+        torusKnot.rotation.y += 0.005;
+        
+        particlesMesh.rotation.x += 0.0005;
+        particlesMesh.rotation.y += 0.0005;
+        
+        renderer.render(scene, camera);
+      };
+      
+      animate();
+    });
+
+    // p5.js Background Particles
+    let particlesSketch = function(p) {
+      let particles = [];
+      
+      p.setup = function() {
+        let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+        canvas.parent('particles-canvas');
+        
+        // Create particles
+        for (let i = 0; i < 50; i++) {
+          particles.push(new Particle());
+        }
+      };
+      
+      p.draw = function() {
+        p.clear();
+        
+        // Update and display particles
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].update();
+          particles[i].display();
+          
+          // Connect particles with lines
+          for (let j = i + 1; j < particles.length; j++) {
+            let d = p.dist(particles[i].pos.x, particles[i].pos.y, particles[j].pos.x, particles[j].pos.y);
+            
+            if (d < 200) {
+              p.stroke(139, 92, 246, p.map(d, 0, 200, 50, 0));
+              p.line(particles[i].pos.x, particles[i].pos.y, particles[j].pos.x, particles[j].pos.y);
+            }
+          }
+        }
+      };
+      
+      p.windowResized = function() {
+        p.resizeCanvas(p.windowWidth, p.windowHeight);
+      };
+      
+      class Particle {
+        constructor() {
+          this.pos = p.createVector(p.random(p.width), p.random(p.height));
+          this.vel = p.createVector(p.random(-0.5, 0.5), p.random(-0.5, 0.5));
+          this.size = p.random(3, 8);
+          this.color = p.color(139, 92, 246, p.random(50, 150));
+        }
+        
+        update() {
+          this.pos.add(this.vel);
+          
+          // Bounce off edges
+          if (this.pos.x < 0 || this.pos.x > p.width) {
+            this.vel.x *= -1;
+          }
+          
+          if (this.pos.y < 0 || this.pos.y > p.height) {
+            this.vel.y *= -1;
+          }
+        }
+        
+        display() {
+          p.noStroke();
+          p.fill(this.color);
+          p.ellipse(this.pos.x, this.pos.y, this.size);
+        }
+      }
+    };
+    
+    new p5(particlesSketch);
+  </script>
+</body>
+</html>
